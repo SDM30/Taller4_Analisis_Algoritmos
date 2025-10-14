@@ -135,8 +135,6 @@ def SpanningTree_Backtrack(T, s, e):
 
     path.insert(0, s)
     return path
-
-
 # end def
 '''
 '''
