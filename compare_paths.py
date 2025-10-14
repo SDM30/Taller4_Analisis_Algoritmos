@@ -94,7 +94,7 @@ def KruskalShortest( G, start, end ):
       Tree[ i ] = p
 
       for j in A[i]:
-          heapq.heappush( minQueue, ( 1, j, i ) )
+          heapq.heappush( minQueue, ( 1 + c, j, i ) )
   
   Final = SpanningTree_Backtrack( Tree, start, end )
   return Final
@@ -103,13 +103,34 @@ def KruskalShortest( G, start, end ):
 '''
 '''
 def SpanningTree_Backtrack(T, s, e):
-    P = []
+    if s == e:
+        return [s]
+
+    n = len(T)
+    if not (0 <= s < n and 0 <= e < n):
+        return []          # índices fuera de rango
+
+    if T[e] == e:
+        return []          # nunca se le asignó padre distinto a e
+
+    path = []
+    seen = set()
     j = e
     while j != s:
-        P = [j] + P
-        j = T[j]
-    P = [s] + P
-    return P
+        if j in seen:
+            return []      # ciclo en la tabla de padres
+        seen.add(j)
+
+        parent = T[j]
+        if parent == j or parent == -1:
+            return []      # padre sin asignar o marcador inválido
+
+        path.insert(0, j)
+        j = parent
+
+    path.insert(0, s)
+    return path
+
 
 # end def
 '''
