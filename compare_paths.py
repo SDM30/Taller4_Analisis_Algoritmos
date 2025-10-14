@@ -197,6 +197,10 @@ def main( argv ):
   P += [ KruskalCheapest( ( V, A ), pId, qId ) ]
 
   # Define colors
+  # R Dijkstra Caminos cortos
+  # G Dijkstra Caminos baratos
+  # B Kruskal Caminos cortos
+  # Black Kruskal Caminos baratos
   C = [ ( 1, 0, 0 ), ( 0, 1, 0 ), ( 0, 0, 1 ), ( 0, 0, 0 ) ]
   for i in range( 4 ) :
     viewer.add_path( P[ i ], C[ i ] )
