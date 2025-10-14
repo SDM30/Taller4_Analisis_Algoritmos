@@ -1,0 +1,193 @@
+## =========================================================================
+## @author Leonardo Florez-Valencia (florez-l@javeriana.edu.co)
+## =========================================================================
+
+import sys, heapq, math
+from MeshViewer import *
+
+'''
+'''
+def distance( a, b ):
+   return sum( [ ( a[ i ] - b[ i ] ) ** 2 for i in range( len( a ) ) ] ) ** 0.5
+# end def
+
+'''
+'''
+def DijkstraCheapest(G, start, end):
+    """Camino más barato (distancia al cuadrado como costo)"""
+    V, A = G
+    n = len(V)
+    dist = [math.inf]*n
+    prev = [-1]*n
+    dist[start] = 0
+    Q = [(0, start)]
+
+    while Q:
+        cost, u = heapq.heappop(Q)
+        if u == end:
+            break
+        for v in A[u]:
+            d = distance(V[u], V[v])**2
+            if dist[u] + d < dist[v]:
+                dist[v] = dist[u] + d
+                prev[v] = u
+                heapq.heappush(Q, (dist[v], v))
+
+    path = []
+    u = end
+    if prev[u] == -1:
+        return []
+    while u != -1:
+        path.insert(0, u)
+        u = prev[u]
+    return path
+# end def
+
+'''
+'''
+def DijkstraShortest(G, start, end):
+    """Camino más corto (distancia)"""
+    V, A = G
+    n = len(V)
+    dist = [math.inf]*n
+    prev = [-1]*n
+    dist[start] = 0
+    Q = [(0, start)]
+
+    while Q:
+        cost, u = heapq.heappop(Q)
+        if u == end:
+            break
+        for v in A[u]:
+            d = distance(V[u], V[v])
+            if dist[u] + d < dist[v]:
+                dist[v] = dist[u] + d
+                prev[v] = u
+                heapq.heappush(Q, (dist[v], v))
+
+    # Reconstruir camino
+    path = []
+    u = end
+    if prev[u] == -1:
+        return []  # no alcanzable
+    while u != -1:
+        path.insert(0, u)
+        u = prev[u]
+    return path
+# end def
+
+'''
+'''
+def KruskalShortest( G, start, end ):
+  V, A = G
+  
+  n = len( V )
+  marks = [ False for i in range( n ) ]
+  Tree = [i for i in range( n )]
+  minQueue = [ ( float( 0 ), start, start ) ]
+  
+  while len(minQueue) > 0:
+    ( c, i, p ) = heapq.heappop( minQueue )
+    
+    if not marks[i]:
+      marks[ i ] = True
+      Tree[ i ] = p
+
+      for j in A[i]:
+          heapq.heappush( minQueue, ( 1, j, i ) )
+  
+  Final = SpanningTree_Backtrack( Tree, start, end )
+  return Final
+# end def
+
+'''
+'''
+def SpanningTree_Backtrack(T, s, e):
+    P = []
+    j = e
+    while j != s:
+        P = [j] + P
+        j = T[j]
+    P = [s] + P
+    return P
+
+# end def
+'''
+'''
+def KruskalCheapest( G, start, end ):
+  V, A = G
+  
+  n = len( V )
+  marks = [ False for i in range( n ) ]
+  Tree = [i for i in range( n )]
+  minQueue = [ ( float( 0 ), start, start ) ]
+  
+  while len(minQueue) > 0:
+    ( c, i, p ) = heapq.heappop( minQueue )
+    
+    if not marks[i]:
+      marks[ i ] = True
+      Tree[ i ] = p
+
+      for j in A[i]:
+          heapq.heappush( minQueue, ( distance( V[ i ], V[ j ] ), j, i ) )
+  
+  Final = SpanningTree_Backtrack( Tree, start, end )
+  return Final
+# end def
+
+
+
+'''
+'''
+def main( argv ):
+  fname = argv[ 1 ]
+  pId = int( argv[ 2 ] )
+
+  # Read data
+  viewer = MeshViewer( fname, opacity = 0.8 )
+  V, A = viewer.graph( )
+  print(V)
+
+  # Correct pId
+  pId = pId % len( V )
+
+  # Get farthest point
+  qId = pId
+  fDist = 0
+  for i in range( len( V ) ):
+    d = distance( V[ pId ], V[ i ] )
+    if fDist < d:
+      fDist = d
+      qId = i
+    # end if
+  # end for
+
+  # Get paths
+  P  = [ DijkstraShortest( ( V, A ), pId, qId ) ]
+  P += [ DijkstraCheapest( ( V, A ), pId, qId ) ]
+  P += [ KruskalShortest( ( V, A ), pId, qId ) ]
+  P += [ KruskalCheapest( ( V, A ), pId, qId ) ]
+
+  # Define colors
+  C = [ ( 1, 0, 0 ), ( 0, 1, 0 ), ( 0, 0, 1 ), ( 0, 0, 0 ) ]
+  for i in range( 4 ) :
+    viewer.add_path( P[ i ], C[ i ] )
+  # end for
+
+  viewer.show( )
+# end def
+
+""" ==================================================================== """
+if __name__ == '__main__':
+  if len( sys.argv ) < 3:
+    print(
+        'Usage: ' + sys.argv[ 0 ] + ' file.obj pId',
+        file = sys.stderr, flush = True
+        )
+    sys.exit( 1 )
+  # end if
+  main( sys.argv )
+# end if
+
+## eof - compare_paths.py
