@@ -105,13 +105,16 @@ def KruskalShortest( G, start, end ):
 def SpanningTree_Backtrack(T, s, e):
     if s == e:
         return [s]
+    #end if
 
     n = len(T)
     if not (0 <= s < n and 0 <= e < n):
         return []          # índices fuera de rango
+    #end if
 
     if T[e] == e:
         return []          # nunca se le asignó padre distinto a e
+    #end if
 
     path = []
     seen = set()
@@ -119,14 +122,17 @@ def SpanningTree_Backtrack(T, s, e):
     while j != s:
         if j in seen:
             return []      # ciclo en la tabla de padres
+        #end if
         seen.add(j)
 
         parent = T[j]
         if parent == j or parent == -1:
             return []      # padre sin asignar o marcador inválido
+        #end if
 
         path.insert(0, j)
         j = parent
+    #end while
 
     path.insert(0, s)
     return path
