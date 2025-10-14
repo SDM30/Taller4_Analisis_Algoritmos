@@ -3,6 +3,7 @@
 ## =========================================================================
 
 import sys, heapq, math
+from collections import deque
 from MeshViewer import *
 
 '''
@@ -14,7 +15,6 @@ def distance( a, b ):
 '''
 '''
 def DijkstraCheapest(G, start, end):
-    """Camino más barato (distancia al cuadrado como costo)"""
     V, A = G
     n = len(V)
     dist = [math.inf]*n
@@ -22,12 +22,12 @@ def DijkstraCheapest(G, start, end):
     dist[start] = 0
     Q = [(0, start)]
 
-    while Q:
+    while len( Q ) > 0:
         cost, u = heapq.heappop(Q)
         if u == end:
             break
         for v in A[u]:
-            d = distance(V[u], V[v])**2
+            d = distance(V[u], V[v])
             if dist[u] + d < dist[v]:
                 dist[v] = dist[u] + d
                 prev[v] = u
@@ -46,30 +46,29 @@ def DijkstraCheapest(G, start, end):
 '''
 '''
 def DijkstraShortest(G, start, end):
-    """Camino más corto (distancia)"""
     V, A = G
     n = len(V)
-    dist = [math.inf]*n
-    prev = [-1]*n
-    dist[start] = 0
-    Q = [(0, start)]
+    dist = [math.inf] * n
+    prev = [-1] * n
 
-    while Q:
-        cost, u = heapq.heappop(Q)
+    dist[start] = 0
+    q = deque([start])
+
+    while q:
+        u = q.popleft()
         if u == end:
             break
         for v in A[u]:
-            d = distance(V[u], V[v])
-            if dist[u] + d < dist[v]:
-                dist[v] = dist[u] + d
+            if dist[v] is math.inf:
+                dist[v] = dist[u] + 1
                 prev[v] = u
-                heapq.heappush(Q, (dist[v], v))
+                q.append(v) # Encolar no visitados
 
-    # Reconstruir camino
+    if dist[end] is math.inf:
+        return []
+
     path = []
     u = end
-    if prev[u] == -1:
-        return []  # no alcanzable
     while u != -1:
         path.insert(0, u)
         u = prev[u]
