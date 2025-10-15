@@ -15,6 +15,10 @@ def distance( a, b ):
 '''
 '''
 def DijkstraCheapest(G, start, end):
+    """Camino más barato por distancia euclidiana.
+    - Minimiza la suma de longitudes euclidianas de las aristas.
+    - Retorna la lista de vértices desde start hasta end; [] si no hay ruta.
+    """
     V, A = G
     n = len(V)
     dist = [math.inf]*n
@@ -46,6 +50,10 @@ def DijkstraCheapest(G, start, end):
 '''
 '''
 def DijkstraShortest(G, start, end):
+    """Camino con menor número de saltos (aristas).
+    - Implementado como BFS (todas las aristas con peso 1).
+    - Retorna la lista de vértices desde start hasta end; [] si no hay ruta.
+    """
     V, A = G
     n = len(V)
     dist = [math.inf] * n
@@ -78,6 +86,10 @@ def DijkstraShortest(G, start, end):
 '''
 '''
 def KruskalShortest( G, start, end ):
+  """Árbol por niveles (tipo Prim) para saltos y backtracking de ruta.
+  - Trata cada arista con costo 1 y asigna padre al extraer del heap.
+  - Reconstruye el camino de menor saltos con SpanningTree_Backtrack.
+  """
   V, A = G
   
   n = len( V )
@@ -102,6 +114,9 @@ def KruskalShortest( G, start, end ):
 '''
 '''
 def SpanningTree_Backtrack(T, s, e):
+    """Reconstruye la ruta en el árbol de padres T de s a e.
+    - Devuelve [] si no hay ruta válida o si detecta ciclos/índices inválidos.
+    """
     if s == e:
         return [s]
     #end if
@@ -139,6 +154,10 @@ def SpanningTree_Backtrack(T, s, e):
 '''
 '''
 def KruskalCheapest( G, start, end ):
+  """Árbol estilo Prim ponderado por distancia euclidiana y backtracking.
+  - Inserta vecinos con prioridad por distancia y fija padres al extraer.
+  - Reconstruye la ruta con SpanningTree_Backtrack.
+  """
   V, A = G
   
   n = len( V )
@@ -159,8 +178,50 @@ def KruskalCheapest( G, start, end ):
   Final = SpanningTree_Backtrack( Tree, start, end )
   return Final
 # end def
+'''
+'''
+def path_cost( V, P, metric = "euclid" ):
+  """Calcula el costo de un camino P.
+  Parámetros:
+    - V: lista de posiciones de los vértices.
+    - P: lista de índices de vértices (camino).
+    - metric: "euclid" suma longitudes euclidianas; "hops" cuenta aristas.
+  Retorna:
+    - Un float (euclid) o un entero (hops) con el costo total.
+  """
+  if P is None or len( P ) < 2:
+    return 0
+  total = 0.0
+  for a, b in zip( P[ :-1 ], P[ 1: ] ):
+    if metric == "hops":
+      total += 1
+    else:
+      total += distance( V[ a ], V[ b ] )
+  return total
+# end def
 
+'''
+'''
+def report_path_hops( name, path, s, t ):
+  """Imprime longitud en saltos (número de aristas) o indica que no hay ruta."""
+  if path is None or len( path ) == 0:
+    print( f"{name}: sin ruta desde {s} a {t}" )
+  else:
+    hops = max( 0, len( path ) - 1 )
+    print( f"{name}: longitud (saltos) = {hops}" )
+# end def
 
+'''
+'''
+def report_path_euclid( name, V, path, s, t ):
+  """Imprime costo euclidiano total y longitud en saltos, o indica que no hay ruta."""
+  if path is None or len( path ) == 0:
+    print( f"{name}: sin ruta desde {s} a {t}" )
+  else:
+    hops = max( 0, len( path ) - 1 )
+    cost = path_cost( V, path, "euclid" )
+    print( f"{name}: costo (euclid) = {cost} | longitud (saltos) = {hops}" )
+# end def
 
 '''
 '''
@@ -191,6 +252,11 @@ def main( argv ):
   P += [ DijkstraCheapest( ( V, A ), pId, qId ) ]
   P += [ KruskalShortest( ( V, A ), pId, qId ) ]
   P += [ KruskalCheapest( ( V, A ), pId, qId ) ]
+
+  report_path_hops(   "Dijkstra shortest", P[ 0 ], pId, qId )
+  report_path_euclid( "Dijkstra cheapest", V, P[ 1 ], pId, qId )
+  report_path_hops(   "Kruskal shortest",  P[ 2 ], pId, qId )
+  report_path_euclid( "Kruskal cheapest",  V, P[ 3 ], pId, qId )
 
   # Define colors
   # R Dijkstra Caminos cortos
