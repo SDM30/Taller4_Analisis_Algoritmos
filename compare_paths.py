@@ -85,7 +85,7 @@ def DijkstraShortest(G, start, end):
 '''
 '''
 def KruskalShortest( G, start, end ):
-  """
+  """Camino con menor número de saltos (aristas).
   - Trata cada arista con costo 1 y asigna padre al extraer del heap.
   - Reconstruye el camino de menor saltos con SpanningTree_Backtrack.
   """
