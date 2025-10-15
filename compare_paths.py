@@ -51,7 +51,6 @@ def DijkstraCheapest(G, start, end):
 '''
 def DijkstraShortest(G, start, end):
     """Camino con menor número de saltos (aristas).
-    - Implementado como BFS (todas las aristas con peso 1).
     - Retorna la lista de vértices desde start hasta end; [] si no hay ruta.
     """
     V, A = G
@@ -86,7 +85,7 @@ def DijkstraShortest(G, start, end):
 '''
 '''
 def KruskalShortest( G, start, end ):
-  """Árbol por niveles (tipo Prim) para saltos y backtracking de ruta.
+  """
   - Trata cada arista con costo 1 y asigna padre al extraer del heap.
   - Reconstruye el camino de menor saltos con SpanningTree_Backtrack.
   """
@@ -154,7 +153,7 @@ def SpanningTree_Backtrack(T, s, e):
 '''
 '''
 def KruskalCheapest( G, start, end ):
-  """Árbol estilo Prim ponderado por distancia euclidiana y backtracking.
+  """
   - Inserta vecinos con prioridad por distancia y fija padres al extraer.
   - Reconstruye la ruta con SpanningTree_Backtrack.
   """
