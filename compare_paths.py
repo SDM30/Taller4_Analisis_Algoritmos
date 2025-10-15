@@ -171,7 +171,6 @@ def main( argv ):
   # Read data
   viewer = MeshViewer( fname, opacity = 0.8 )
   V, A = viewer.graph( )
-  print(V)
 
   # Correct pId
   pId = pId % len( V )
