@@ -196,7 +196,7 @@ def main( argv ):
   # R Dijkstra Caminos cortos
   # G Dijkstra Caminos baratos
   # B Kruskal Caminos cortos
-  # Black Kruskal Caminos baratos
+  # Black/Orange Kruskal Caminos baratos        // ( 1, 0.5, 0 ) Suzzane
   C = [ ( 1, 0, 0 ), ( 0, 1, 0 ), ( 0, 0, 1 ), ( 0, 0, 0 ) ]
   for i in range( 4 ) :
     viewer.add_path( P[ i ], C[ i ] )
