@@ -104,7 +104,7 @@ def KruskalShortest( G, start, end ):
       Tree[ i ] = p
 
       for j in A[i]:
-          heapq.heappush( minQueue, ( 1 + c, j, i ) )
+          heapq.heappush( minQueue, ( 1, j, i ) )
   
   Final = SpanningTree_Backtrack( Tree, start, end )
   return Final
@@ -153,7 +153,7 @@ def SpanningTree_Backtrack(T, s, e):
 '''
 '''
 def KruskalCheapest( G, start, end ):
-  """
+  """Camino más barato por distancia euclidiana.
   - Inserta vecinos con prioridad por distancia y fija padres al extraer.
   - Reconstruye la ruta con SpanningTree_Backtrack.
   """
